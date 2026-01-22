@@ -30,7 +30,6 @@ public class AddCityFragment extends DialogFragment {
         f.setArguments(b);
         return f;
     }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -41,7 +40,6 @@ public class AddCityFragment extends DialogFragment {
             throw new RuntimeException(context + " must implement AddCityDialogListener");
         }
     }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -51,7 +49,6 @@ public class AddCityFragment extends DialogFragment {
         }
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_city, null);
-
         EditText editCityName = view.findViewById(R.id.edit_text_city_text);
         EditText editProvinceName = view.findViewById(R.id.edit_text_province_text);
 
@@ -59,12 +56,9 @@ public class AddCityFragment extends DialogFragment {
             editCityName.setText(edit.getName());
             editProvinceName.setText(edit.getProvince());
         }
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
         String title = (edit == null) ? "Add a city" : "Edit city";
         String okText = (edit == null) ? "Add" : "OK";
-
         return builder
                 .setView(view)
                 .setTitle(title)
