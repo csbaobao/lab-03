@@ -1,19 +1,20 @@
 package com.example.listycity;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-    private ArrayList<String> dataList;
+public class MainActivity extends AppCompatActivity
+        implements AddCityFragment.AddCityDialogListener {
+
+    private ArrayList<city> dataList;
     private ListView cityList;
-    private ArrayAdapter<String> cityAdapter;
+    private cityArrayAdapter cityAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,30 @@ public class MainActivity extends AppCompatActivity {
                 "Tokyo", "Beijing", "Osaka", "New Delhi"
         };
 
+        String[] provinces = {
+                "AB", "BC", "Moscow",
+                "NSW", "Berlin", "Vienna",
+                "Tokyo", "Beijing", "Osaka", "Delhi"
+        };
+
         dataList = new ArrayList<>();
-        dataList.addAll(Arrays.asList(cities));
+        for (int i = 0; i < cities.length; i++) {
+            dataList.add(new city(cities[i], provinces[i]));
+        }
 
         cityList = findViewById(R.id.city_list);
-        cityAdapter = new ArrayAdapter<>(this, R.layout.content, dataList);
+        cityAdapter = new cityArrayAdapter(this, dataList);
         cityList.setAdapter(cityAdapter);
+
+        FloatingActionButton fab = findViewById(R.id.button_add_city);
+        fab.setOnClickListener(v -> {
+            new AddCityFragment().show(getSupportFragmentManager(), "Add City");
+        });
+    }
+
+    @Override
+    public void addCity(city c) {
+        cityAdapter.add(c);
+        cityAdapter.notifyDataSetChanged();
     }
 }
