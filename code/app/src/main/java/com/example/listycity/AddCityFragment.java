@@ -13,12 +13,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 public class AddCityFragment extends DialogFragment {
+    private static final String KEYCITY = "city";
+    private city edit;
 
     interface AddCityDialogListener {
         void addCity(city c);
+        void updateCity(city c);
     }
 
     private AddCityDialogListener listener;
+
+    public static AddCityFragment newInstance(city c) {
+        AddCityFragment f = new AddCityFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(KEYCITY, c);
+        f.setArguments(b);
+        return f;
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -34,20 +45,45 @@ public class AddCityFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+        // ✅ 取出要编辑的对象（如果有）
+        if (getArguments() != null) {
+            edit = (city) getArguments().getSerializable(KEYCITY);
+        }
+
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_add_city, null);
 
         EditText editCityName = view.findViewById(R.id.edit_text_city_text);
         EditText editProvinceName = view.findViewById(R.id.edit_text_province_text);
 
+        // ✅ 如果是编辑模式：预填
+        if (edit != null) {
+            editCityName.setText(edit.getName());
+            editProvinceName.setText(edit.getProvince());
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        String title = (edit == null) ? "Add a city" : "Edit city";
+        String okText = (edit == null) ? "Add" : "OK";
+
         return builder
                 .setView(view)
-                .setTitle("Add a city")
+                .setTitle(title)
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Add", (dialog, which) -> {
-                    String cityName = editCityName.getText().toString();
-                    String provinceName = editProvinceName.getText().toString();
-                    listener.addCity(new city(cityName, provinceName));
+                .setPositiveButton(okText, (dialog, which) -> {
+                    String cityName = editCityName.getText().toString().trim();
+                    String provinceName = editProvinceName.getText().toString().trim();
+
+                    if (edit == null) {
+
+                        listener.addCity(new city(cityName, provinceName));
+                    } else {
+
+                        edit.setName(cityName);
+                        edit.setProvince(provinceName);
+                        listener.updateCity(edit);
+                    }
                 })
                 .create();
     }
