@@ -46,7 +46,6 @@ public class AddCityFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
-        // ✅ 取出要编辑的对象（如果有）
         if (getArguments() != null) {
             edit = (city) getArguments().getSerializable(KEYCITY);
         }
@@ -56,7 +55,6 @@ public class AddCityFragment extends DialogFragment {
         EditText editCityName = view.findViewById(R.id.edit_text_city_text);
         EditText editProvinceName = view.findViewById(R.id.edit_text_province_text);
 
-        // ✅ 如果是编辑模式：预填
         if (edit != null) {
             editCityName.setText(edit.getName());
             editProvinceName.setText(edit.getProvince());
